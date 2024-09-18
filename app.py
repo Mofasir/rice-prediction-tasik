@@ -11,8 +11,8 @@ def create_connection():
         connection = mysql.connector.connect(
             host='localhost',
             database='rice_db',
-            user='your_username',
-            password='your_password'
+            user='root',
+            password=''
         )
         return connection
     except Error as e:
