@@ -4,19 +4,27 @@ import plotly.express as px
 from datetime import datetime, timedelta
 import mysql.connector
 from mysql.connector import Error
+import os
+from dotenv import load_dotenv
 
-# Fungsi untuk koneksi ke database
+load_dotenv()
+
 def create_connection():
     try:
+        st.write(f"Attempting to connect to {os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}")
         connection = mysql.connector.connect(
-            host='localhost',
-            database='rice_db',
-            user='root',
-            password=''
+            host=os.getenv('DB_HOST', 'localhost'),
+            database=os.getenv('DB_NAME', 'rice_db'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            port=int(os.getenv('DB_PORT', 3306))
         )
-        return connection
+        if connection.is_connected():
+            st.success("Successfully connected to the database")
+            return connection
     except Error as e:
         st.error(f"Error connecting to MySQL database: {e}")
+        st.write(f"Connection parameters: host={os.getenv('DB_HOST')}, database={os.getenv('DB_NAME')}, user={os.getenv('DB_USER')}, port={os.getenv('DB_PORT')}")
         return None
 
 # Fungsi untuk mengambil data
